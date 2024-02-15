@@ -33,7 +33,8 @@ int main() {
     }
     
     int size = 100;
-
+    bool rehashNeeded = false;
+    
     cout << "WELCOME TO STUDENT LIST AGAIN" << endl;
     cout << "Hash Table" << endl;
 
@@ -48,6 +49,7 @@ int main() {
     // ADD
     if (strcmp(command, "ADD") == 0) {
         Student* inputStudent = new Student();
+        
          //Takes in information
          cout << "First Name: " << endl;
          char input[20];
@@ -72,15 +74,21 @@ int main() {
          cin.ignore(80, '\n');
          inputStudent->setGPA(float1);
 
-         Node* inputNode = new Node(inputStudent);
          
-         add();
+         add(inputStudent, size, hash);
+        
+        // Check if rehashing is needed
+        hash(size, hash, rehashNeeded);
+        if (rehashNeeded) {
+            rehash(hash, size);
+            rehashNeeded = false;
+        }
     }
 
     // PRINT
     else if (strcmp(command, "PRINT") == 0) {
         cout << "Printing all students: " << endl;
-        print();
+        print(hash, size);
     }
 
     // DELETE
@@ -90,10 +98,15 @@ int main() {
         int deleteID;
         cin >> deleteID;
         cin.get();
-        int index = deleteID % size;
         
-
-        remove(hash[index], hash[index], hash[index], deleteID);
+        del(hash, size, deleteID);
+        
+        // Check if rehashing is needed
+        hash(size, hash, rehashNeeded);
+        if (rehashNeeded) {
+            rehash(hash, size);
+            rehashNeeded = false;
+        }
     }
       
     // AVERAGE
@@ -112,7 +125,23 @@ int main() {
   return 0;
 }
 
-void add() {
+void add(Student* newStudent, int &size, Node** &hash) {
+    
+       int hashValue = newStudent->getID() % size;
+       Node* newNode = new Node(newStudent);
+
+       // chaining
+       if (hash[hashValue] == nullptr) {
+           hash[hashValue] = newNode;
+       } 
+       
+       else {
+           newNode->setNext(hash[hashValue]);
+           hash[hashValue] = newNode;
+       }
+
+       cout << "Student added successfully." << endl;
+   }
 }
 
 void del(Node* &head, Node* current, Node* prev, int deleteID) {
@@ -148,46 +177,85 @@ void del(Node* &head, Node* current, Node* prev, int deleteID) {
   }
 }
 
-void avg() {
-
-}
-
 // print
 void print() {
+    for(int i = 0; i < size; i++){
+        
+      if(hash[i] != NULL) {
+        hash[i]->getStudent()->print();
 
-}
-
-void hash(int size, Node** &hash, bool &rehash) {
-    rehash = false;
-    Node** newHash = new Node*[size*2];
-    for (int i = 0; i < size*2: i++) {
-        newHash[i] = NULL'
+        if(hash[i]->getNext() != NULL) {
+            hash[i]->getNext()->getStudent()->print();;
+            
+          if(hash[i]->getNext()->getNext()!=NULL) {
+              hash[i]->getNext()->getNext()->getStudent()->print();;
+          }
+        }
+      }
     }
-    
-    for (int i = 0; i < size; i++) {
-        Node* temp = hash[i];
-        Node* tempTwo = hash[i];
-        Node* tempThree = hash[i];
-        Node* tempFour = hash[i];
-    }
-    
-    tempTwo = temp -> getNext();
-    tempThree = tempTwo -> getNext();
-    tempFour = tempThree -> getNext();
-    
-    
-   
-    size = size * 2;
-    delete[] hash;
-    hash = newHash;
     return;
 }
 
-void rehash(Node** &hash,) {
-    int count;
-    if (count == 3) {
-        rehash = true;
+void hash(int size, Node** &hash, bool &rehashNeeded) {
+    int collisionThreshold = 3;
+    int totalCollisions = 0;
+
+    // Calculate total collisions
+    for (int i = 0; i < size; ++i) {
+        if (hash[i] != nullptr) {
+            Node* current = hash[i];
+            while (current->getNext() != nullptr) {
+                totalCollisions++;
+                current = current->getNext();
+            }
+        }
     }
-    
-    if rehas
+
+    // Check if rehashing is needed
+    if (totalCollisions > collisionThreshold * size) {
+        rehashNeeded = true;
+    }
+}
+
+
+void rehash(Node** &hash, int &size) {
+    int newSize = size * 2;
+    Node** newHash = new Node* [newSize];
+
+    // new hash table
+    for (int i = 0; i < newSize; ++i) {
+        newHash[i] = nullptr;
+    }
+
+    // Rehash
+    for (int i = 0; i < size; ++i) {
+        
+        if (hash[i] != NULL) {
+            Node* current = hash[i];
+            
+            while (current != NULL) {
+                Node* next = current->getNext();
+                int hashValue = current->getStudent()->getID() % newSize;
+
+                if (newHash[hashValue] == NULL) {
+                    newHash[hashValue] = current;
+                    current->setNext(NULL);
+                } 
+                
+                else {
+                    current->setNext(newHash[hashValue]);
+                    newHash[hashValue] = current;
+                }
+
+                current = next;
+            }
+        }
+    }
+
+    //updating variables
+    delete[] hash;
+    hash = newHash;
+    size = newSize;
+
+    cout << "Hash table rehashed. New size: " << newSize << endl;
 }

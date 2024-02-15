@@ -24,11 +24,6 @@ public:
     
     Student* getStudent();
     
-    //THESE FUNCTIONS ONLY WORK FOR LINKLIST PART ONE
-
-    //void setValue(int newvalue);
-    //int getValue();
-    
     
 private:
   // Variables

@@ -30,15 +30,3 @@ Student* Node::getStudent() {
 }
 
 
-/*
- This works for Linked List part 1, but is not really helpful for link list part 2
- 
- void Node::setValue(int newvalue) {
-    student.setValue(newvalue);
- }
- 
- int Node::getValue() {
-    return student.getValue();
- }
- */
-
