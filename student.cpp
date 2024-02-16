@@ -36,7 +36,7 @@ void Student::setFirstName(char tempFirst[]) {
 
 void Student::setLastName(char tempLast[]) {
     strncpy(lastName, tempLast, sizeof(lastName) - 1);
-    firstName[sizeof(lastName) - 1] = '\0';
+    lastName[sizeof(lastName) - 1] = '\0';
 }
 
 
