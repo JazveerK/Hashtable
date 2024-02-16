@@ -24,7 +24,7 @@ void print(Node** &hash, int &size);
 void del(Node** &hash, int &size, int deleteID);
 void hashFunction(int size, Node** &hash, bool &rehashNeeded);
 void rehash(Node** &hash, int &size);
-void randFunction(Node** &hash, int &size, vector<char*> firstNames, vector <char*> lastNames);
+void randFunction(Node** &hash, int &size);
 
 int main() {
     bool running = true;
@@ -36,31 +36,6 @@ int main() {
         hash[i] = nullptr;
     }
     
-    
-    //initializing
-    vector<char*> firstNames;
-    vector<char*> lastNames;
-    
-    fstream first_stream;
-    fstream second_stream;
-    
-    //Reading in files
-    first_stream.open("FirstNames.txt");
-    for(int i = 0; i < 50; i++){
-        char* temp = new char [15];
-        first_stream.getline(temp, 15);
-        firstNames.push_back(temp);
-    }
-    
-    first_stream.close();
-    
-    second_stream.open("LastNames.txt");
-    for(int i = 0; i < 50; i++){
-        char* temp = new char[15];
-        second_stream.getline(temp, 15);
-        lastNames.push_back(temp);
-    }
-  
     int size = 100;
     bool rehashNeeded = false; // Initializing rehashNeeded variable
     
@@ -150,45 +125,16 @@ int main() {
         
         //RANDOM
         else if (strcmp(command, "RANDOM") == 0) {
-            //randFunction(hash, size, firstNames, lastNames);
-            //strcpy(command, "");
+            randFunction(hash, size);
             
-            
-            int numPersons = 0;
-            cout << "How many students do you want to generate: " << endl;
-            cin >> numPersons;
-            
-            //setting the seed
-            srand(time(NULL));
-            
-            int ID = 100000;
-            //randomly generating a name and GPA, and adding to the hash table.
-            
-            cout << "Number of students to generate: " << numPersons << endl;
-            
-            for(int i = 0; i < numPersons; i++) {
-                cout << "Generating student " << i+1 << " of " << numPersons << endl;
-                int randNumFirst = rand()%50;
-                int randNumSecond = rand()%50;
-                
-                float GPA = (float) (rand()%(100-1+1) + 1)/25;
-                
-                Student* randomStudent = new Student();
-                
-                strcpy(randomStudent->getFirstName(), firstNames.at(randNumFirst));
-                strcpy(randomStudent->getLastName(), lastNames.at(randNumSecond));
-                randomStudent->setID(ID);
-                ID++;
-                randomStudent->setGPA(GPA);
-                add(randomStudent, size, hash);
-                
-                cout << "Adding student " << randomStudent->getFirstName() << " " << randomStudent->getLastName() << " to the hash table." << endl;
-                delete randomStudent;
+            // Check if rehashing is needed after adding or deleting
+            hashFunction(size, hash, rehashNeeded);
+            if (rehashNeeded) {
+                rehash(hash, size);
+                rehashNeeded = false;
             }
             
-            cout << "Random student generation complete." << endl;
-
-            cout << "Returning to command prompt." << endl;
+            return;
         }
        
 
@@ -258,9 +204,35 @@ void print(Node** &hash, int &size) {
 }
 
 //Credit to Tejas for helping me with this part
-void randFunction(Node** &hash, int &size, vector<char*> firstNames, vector <char*> lastNames) {
-
+void randFunction(Node** &hash, int &size) {
+    
+    //initializing
+    vector<char*> firstNames;
+    vector<char*> lastNames;
     int numPersons = 0;
+    
+    fstream first_stream;
+    fstream second_stream;
+    
+    //Reading in files
+    first_stream.open("FirstNames.txt");
+    for(int i = 0; i < 50; i++){
+        char* temp = new char [15];
+        first_stream.getline(temp, 15);
+        firstNames.push_back(temp);
+    }
+    
+    first_stream.close();
+    
+    second_stream.open("LastNames.txt");
+    for(int i = 0; i < 50; i++){
+        char* temp = new char[15];
+        second_stream.getline(temp, 15);
+        lastNames.push_back(temp);
+    }
+    
+    second_stream.close();
+    
     cout << "How many students do you want to generate: " << endl;
     cin >> numPersons;
     
@@ -270,10 +242,7 @@ void randFunction(Node** &hash, int &size, vector<char*> firstNames, vector <cha
     int ID = 100000;
     //randomly generating a name and GPA, and adding to the hash table.
     
-    cout << "Number of students to generate: " << numPersons << endl;
-    
     for(int i = 0; i < numPersons; i++) {
-        cout << "Generating student " << i+1 << " of " << numPersons << endl;
         int randNumFirst = rand()%50;
         int randNumSecond = rand()%50;
         
@@ -288,12 +257,7 @@ void randFunction(Node** &hash, int &size, vector<char*> firstNames, vector <cha
         randomStudent->setGPA(GPA);
         add(randomStudent, size, hash);
         
-        cout << "Adding student " << randomStudent->getFirstName() << " " << randomStudent->getLastName() << " to the hash table." << endl;
-        delete randomStudent;
     }
-    
-    cout << "Random student generation complete." << endl;
-    return;
 }
 
 

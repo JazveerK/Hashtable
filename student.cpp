@@ -1,4 +1,12 @@
 #include <iostream>
+#include <cctype>
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <cstdlib>
+#include <time.h>
 #include "student.h"
 #include <cstring>
 
@@ -44,6 +52,6 @@ int Student::getID() {
 void Student::print() {
   cout << "Student: " << firstName << " " << lastName << endl;
     cout << "Student ID: " << studentID << endl;
-    cout << "GPA: " << GPA << endl;
+    cout << "GPA: " << GPA << fixed << setprecision(2) << endl;
     cout << endl;
 }
