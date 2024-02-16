@@ -150,45 +150,8 @@ int main() {
         
         //RANDOM
         else if (strcmp(command, "RANDOM") == 0) {
-            //randFunction(hash, size, firstNames, lastNames);
-            //strcpy(command, "");
-            
-            
-            int numPersons = 0;
-            cout << "How many students do you want to generate: " << endl;
-            cin >> numPersons;
-            
-            //setting the seed
-            srand(time(NULL));
-            
-            int ID = 100000;
-            //randomly generating a name and GPA, and adding to the hash table.
-            
-            cout << "Number of students to generate: " << numPersons << endl;
-            
-            for(int i = 0; i < numPersons; i++) {
-                cout << "Generating student " << i+1 << " of " << numPersons << endl;
-                int randNumFirst = rand()%50;
-                int randNumSecond = rand()%50;
-                
-                float GPA = (float) (rand()%(100-1+1) + 1)/25;
-                
-                Student* randomStudent = new Student();
-                
-                strcpy(randomStudent->getFirstName(), firstNames.at(randNumFirst));
-                strcpy(randomStudent->getLastName(), lastNames.at(randNumSecond));
-                randomStudent->setID(ID);
-                ID++;
-                randomStudent->setGPA(GPA);
-                add(randomStudent, size, hash);
-                
-                cout << "Adding student " << randomStudent->getFirstName() << " " << randomStudent->getLastName() << " to the hash table." << endl;
-                delete randomStudent;
-            }
-            
-            cout << "Random student generation complete." << endl;
-
-            cout << "Returning to command prompt." << endl;
+            randFunction(hash, size, firstNames, lastNames);
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
        
 
@@ -281,15 +244,17 @@ void randFunction(Node** &hash, int &size, vector<char*> firstNames, vector <cha
         
         Student* randomStudent = new Student();
         
-        strcpy(randomStudent->getFirstName(), firstNames.at(randNumFirst));
-        strcpy(randomStudent->getLastName(), lastNames.at(randNumSecond));
+        cout << firstNames.at(randNumFirst) << endl;
+        cout << lastNames.at(randNumSecond) << endl;
+        
+        randomStudent->setFirstName(firstNames.at(randNumFirst));
+        randomStudent->setLastName(lastNames.at(randNumSecond));
         randomStudent->setID(ID);
         ID++;
         randomStudent->setGPA(GPA);
         add(randomStudent, size, hash);
         
         cout << "Adding student " << randomStudent->getFirstName() << " " << randomStudent->getLastName() << " to the hash table." << endl;
-        delete randomStudent;
     }
     
     cout << "Random student generation complete." << endl;

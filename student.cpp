@@ -29,6 +29,16 @@ char* Student::getLastName() {
   return lastName;
 }
 
+void Student::setFirstName(char tempFirst[]) {
+    strncpy(firstName, tempFirst, sizeof(firstName) - 1);
+    firstName[sizeof(firstName) - 1] = '\0';
+}
+
+void Student::setLastName(char tempLast[]) {
+    strncpy(lastName, tempLast, sizeof(lastName) - 1);
+    firstName[sizeof(lastName) - 1] = '\0';
+}
+
 
 //GPA
 float Student::getGPA() {

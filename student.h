@@ -13,6 +13,8 @@ public:
     //name
   char* getFirstName();
   char* getLastName();
+    void setFirstName(char tempFirst[]);
+    void setLastName(char tempLast[]);
     
     //ID
   int getID();
@@ -26,6 +28,8 @@ public:
 
 private:
 //Initialzing variables 
+    char tempFirst[81];
+    char tempLast[81];
   char firstName[81];
   char lastName[81];
   int studentID;
